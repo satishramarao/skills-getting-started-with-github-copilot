@@ -70,37 +70,35 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Add event listeners for delete buttons (after DOM update)
-      setTimeout(() => {
-        document.querySelectorAll(".delete-participant").forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            const activity = btn.getAttribute("data-activity");
-            const email = btn.getAttribute("data-email");
-            try {
-              const response = await fetch(
-                `/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`,
-                { method: "POST" }
-              );
-              const result = await response.json();
-              if (response.ok) {
-                messageDiv.textContent = result.message;
-                messageDiv.className = "success";
-                fetchActivities();
-              } else {
-                messageDiv.textContent = result.detail || "An error occurred";
-                messageDiv.className = "error";
-              }
-              messageDiv.classList.remove("hidden");
-              setTimeout(() => {
-                messageDiv.classList.add("hidden");
-              }, 5000);
-            } catch (error) {
-              messageDiv.textContent = "Failed to unregister. Please try again.";
+      document.querySelectorAll(".delete-participant").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          const activity = btn.getAttribute("data-activity");
+          const email = btn.getAttribute("data-email");
+          try {
+            const response = await fetch(
+              `/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(email)}`,
+              { method: "POST" }
+            );
+            const result = await response.json();
+            if (response.ok) {
+              messageDiv.textContent = result.message;
+              messageDiv.className = "success";
+              fetchActivities();
+            } else {
+              messageDiv.textContent = result.detail || "An error occurred";
               messageDiv.className = "error";
-              messageDiv.classList.remove("hidden");
             }
-          });
+            messageDiv.classList.remove("hidden");
+            setTimeout(() => {
+              messageDiv.classList.add("hidden");
+            }, 5000);
+          } catch (error) {
+            messageDiv.textContent = "Failed to unregister. Please try again.";
+            messageDiv.className = "error";
+            messageDiv.classList.remove("hidden");
+          }
         });
-      }, 0);
+      });
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
@@ -128,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
-        fetchActivities(); // <-- Refresh activities list after signup
+        fetchActivities(); // Refresh activities list after signup
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
